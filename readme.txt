@@ -1,35 +1,78 @@
-Rice Grain Quality Assessment using Morphological Image Processing:
+TEAM MEMBERS:
 
-Why Assessing Rice Quality Matters:
+KEVIN DSOUZA        4SO22CD025
+ADITYA S SHETTY     4SO22CD048
+TUSHAR J KOTIAN     4SO22CD061
 
-Rice is a daily staple for billions of people around the world, and its quality plays a big role in both consumer satisfaction and market value. Traditionally, checking the quality of rice—like its size, shape, or if it’s broken—is done by hand. But that method is slow, inconsistent, and prone to human error.
 
-To improve this, researchers and industries are turning to automated solutions using image processing, which offers faster, more reliable, and repeatable results. These systems can quickly analyze large quantities of rice without getting tired or making mistakes.
+Problem Statement :
 
-How Image Processing Helps:
+In the rice industry, quality control is a crucial step before packaging and shipping. Traditionally, checking whether rice grains are of good length, shape, and size has been done manually by workers, which is time-consuming, labor-intensive, and often inconsistent due to human error.
+The goal of this project is to automate the quality assessment of rice grains using a basic webcam and image processing techniques in MATLAB. The focus is to evaluate whether the rice grains meet a certain standard—especially in terms of **length and shape**—without needing advanced equipment.
 
-The process begins by capturing an image of rice grains using a simple camera or webcam. Once the image is captured, it’s converted to grayscale and cleaned up to reduce any background noise or unnecessary details.
+By using morphological image processing, we aim to:
 
-Then, using morphological operations (basic image transformations like erosion and dilation), the system enhances and isolates each rice grain in the image. These steps help separate individual grains from the background and from each other, especially if they are overlapping or touching.
+Detect individual rice grains in real-time,
+Measure their geometric properties like length and width,
+Determine whether the grains meet the required quality standard.
 
-Measuring Rice Grain Quality:
+This helps in achieving a faster, objective, and repeatable method of rice quality inspection.
 
-After the grains are separated, the system measures various properties like:
+Techniques Used & Program Flow 
 
-Area – to check the size of each grain
-Length and width – to calculate how long or wide each grain is
-Aspect ratio – the ratio of length to width, which helps in identifying broken or unusually shaped grains
+Here’s how the system works step-by-step, explained in a simple and understandable way:
 
-These measurements are then compared to predefined quality standards. For example, if a grain is too short or wide, it might be considered broken or defective.
+1. Webcam Setup & Image Capture
+The webcam is initialized and begins capturing live images of rice grains placed under it.
+Each frame is treated like a snapshot and used for analysis in real-time.
 
-Final Judgment:
+2. Preprocessing the Image
 
-Once the system finishes analyzing the grains, it can automatically decide:
+First, the system converts the image to grayscale to simplify it and remove unnecessary color data.
+Then it resizes the image to a fixed width (e.g., 256 pixels) while maintaining the aspect ratio.
+The grayscale image is binarized (converted to black and white) using adaptive thresholding, which adjusts to varying lighting conditions.
+It fills in small holes and gaps in grains using `imfill`, preparing the grains for clean analysis.
 
-If the rice grains are of good quality
-If the sample should be rejected
-Or, in some cases, if no grains were detected at all
+3. Morphological Processing
 
-This makes the whole inspection process efficient and scalable—perfect for use in agriculture industries where speed and accuracy are crucial.
+Erosion is applied using a disk-shaped structural element to separate closely touching grains.
+Border objects (grains touching the edge of the image) are removed to avoid incomplete measurements.
+The number of non-zero pixels (`nnz`) is checked to ensure there are grains in the image.
+
+ 4. Grain Area Analysis
+
+The connected regions (grains) are labeled using `bwlabel`.
+The area of each grain is calculated using `regionprops`.
+The mean area is computed to understand what a typical grain size looks like.
+Grains with unusually large sizes (likely stuck together) are filtered out using `bwareaopen`.
+
+5. Length and Width Measurement
+
+The refined grain image is re-labeled, and the system measures:
+
+Major Axis Length (longest dimension of the grain)
+Minor Axis Length (shortest dimension)
+These measurements are extracted into a table and converted to arrays.
+
+6. Aspect Ratio Calculation
+
+The system calculates the aspect ratio for each grain (length divided by width).
+This helps in identifying whether a grain is long and slender (good quality) or short and stubby (possibly broken).
+It sets a threshold (e.g., ratio > 4) as a benchmark for quality.
+
+7. Final Evaluation
+
+If 80% or more grains have an aspect ratio higher than the threshold, the rice is considered "of good length."
+Otherwise, it's rejected.
+If no grains are found, it displays "No rice grains."
+
+8. Display Results
+
+The result (`msg`) is displayed directly on the live video using `insertText`.
+The video is shown through a `VideoPlayer` window that updates with each frame.
+The loop continues as long as the video window is open.
+
+
+
 
 
